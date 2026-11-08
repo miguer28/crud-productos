@@ -2,81 +2,379 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>CRUD de Productos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Heladería Splash 🍦</title>
+  <!-- Fuentes de Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  
   <style>
-    body { font-family: system-ui; max-width: 760px; margin: 2rem auto; }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td { border: 1px solid #ccc; padding: .5rem; text-align: left; }
-    input { margin: .2rem; padding: .4rem; }
-    button { padding: .4rem .8rem; cursor: pointer; }
+    /* Variables de color de la heladería */
+    :root {
+      --color-fresa: #FF6B8B;
+      --color-menta: #4ECDC4;
+      --color-vainilla: #FFE66D;
+      --color-cielo: #A8DADC;
+      --color-chocolate: #4A3B32;
+      --color-fondo: #FFF9F0;
+      --color-blanco: #FFFFFF;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--color-fondo);
+      color: var(--color-chocolate);
+    }
+
+    /* Barra de navegación */
+    header {
+      background-color: var(--color-blanco);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.8rem;
+      color: var(--color-fresa);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Sección Hero (Portada) */
+    .hero {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, #FFF9F0 0%, #FFE6EE 100%);
+    }
+
+    .hero h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 3rem;
+      color: var(--color-fresa);
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      color: #666;
+    }
+
+    /* Contenedor principal */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .section-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: var(--color-menta);
+      text-align: center;
+    }
+
+    /* Grid de Tarjetas */
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .card {
+      background: var(--color-blanco);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    }
+
+    .card-img {
+      height: 180px;
+      background-color: var(--color-cielo);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem; /* Emoji temporal para simular foto */
+    }
+
+    .card-body {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.4rem;
+      color: var(--color-chocolate);
+      margin-bottom: 0.5rem;
+    }
+
+    .card-category {
+      font-size: 0.8rem;
+      background: var(--color-vainilla);
+      color: var(--color-chocolate);
+      padding: 4px 10px;
+      border-radius: 50px;
+      align-self: flex-start;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: #777;
+      margin-bottom: 1rem;
+      flex-grow: 1;
+    }
+
+    .card-price {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.5rem;
+      color: var(--color-fresa);
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .btn-primary {
+      background-color: var(--color-menta);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #3BB8B0;
+      transform: scale(1.02);
+    }
+
+    .btn-danger {
+      background-color: #ffeded;
+      color: #ff4757;
+      font-size: 0.85rem;
+      padding: 0.5rem 1rem;
+    }
+
+    .btn-danger:hover {
+      background-color: #ff4757;
+      color: white;
+    }
+
+    /* Sección del Formulario (Admin) */
+    #panel-admin {
+      display: none; /* Oculto por defecto */
+    }
+
+    .admin-panel {
+      background: var(--color-blanco);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--color-menta);
+    }
+
+    /* Mensaje de vacío */
+    .empty-msg {
+      text-align: center;
+      color: #999;
+      grid-column: 1 / -1;
+      padding: 2rem;
+      font-size: 1.1rem;
+    }
   </style>
 </head>
 <body>
-  <h1>Productos</h1>
 
-  <form id="form">
-    <input id="nombre" placeholder="Nombre" required>
-    <input id="precio" type="number" step="0.01" placeholder="Precio" required>
-    <input id="stock" type="number" placeholder="Stock">
-    <input id="categoria" placeholder="Categoria">
-    <button type="submit">Agregar</button>
-  </form>
+  <!-- Barra superior -->
+  <header>
+    <div class="logo">🍦 Heladería Splash</div>
+  </header>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Precio</th>
-        <th>Stock</th>
-        <th>Categoría</th>
-        <th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="cuerpo"></tbody>
-  </table>
+  <!-- Portada -->
+  <section class="hero">
+    <h1>Endulza tu día 🌈</h1>
+    <p>Los helados más cremosos y coloridos, hechos con amor y los mejores ingredientes.</p>
+  </section>
+
+  <!-- Contenido principal -->
+  <div class="container">
+    
+    <!-- Catálogo de helados -->
+    <h2 class="section-title">Nuestros Sabores</h2>
+    <div class="catalogo" id="cuerpo">
+      <!-- Aquí JavaScript inyectará las tarjetas -->
+    </div>
+
+    <!-- Panel de administración (Formulario) -->
+    <div id="panel-admin">
+      <h2 class="section-title">Modo Dueño 🧑‍🍳 (Agregar Helado)</h2>
+      <div class="admin-panel">
+        <form id="form">
+          <div class="form-group">
+            <input id="nombre" placeholder="Nombre del helado (ej. Cono de Fresa)" required>
+          </div>
+          <div class="form-group">
+            <input id="descripcion" placeholder="Descripción corta (opcional)">
+          </div>
+          <div class="form-group">
+            <input id="precio" type="number" step="0.01" placeholder="Precio ($)" required>
+          </div>
+          <div class="form-group">
+            <input id="stock" type="number" placeholder="Stock disponible" required>
+          </div>
+          <div class="form-group">
+            <input id="categoria" placeholder="Categoría (Cono, Copa, Malteada...)" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Agregar al Menú 🍧</button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Botón secreto de administrador -->
+  <div style="text-align: center; padding: 2rem 0; font-size: 0.8rem;">
+    <a href="#" onclick="accesoDueño()" style="color: #ccc; text-decoration: none;">Acceso Dueño 🔐</a>
+  </div>
 
   <script>
-    const API = "http://localhost:8000/products/";
+    // ⚠️ IMPORTANTE: Aquí va tu URL de Railway
+    const API = "https://web-production-af2b0.up.railway.app/products/";
 
+    // Función para renderizar las tarjetas
     async function cargar() {
-      const res = await fetch(API);
-      const productos = await res.json();
-      const cuerpo = document.getElementById("cuerpo");
-      cuerpo.innerHTML = productos.map(p => `
-        <tr>
-          <td>${p.id}</td>
-          <td>${p.nombre}</td>
-          <td>${p.precio}</td>
-          <td>${p.stock}</td>
-          <td>${p.categoria ?? ""}</td>
-          <td><button onclick="eliminar(${p.id})">Eliminar</button></td>
-        </tr>
-      `).join("");
+      try {
+        const res = await fetch(API);
+        const productos = await res.json();
+        const cuerpo = document.getElementById("cuerpo");
+        
+        if (productos.length === 0) {
+          cuerpo.innerHTML = `<div class="empty-msg">No hay helados en el menú aún. ¡Agrega el primero! 🍨</div>`;
+          return;
+        }
+
+        const emojis = ["🍦", "🍧", "🍨", "🍰", "🥤", "🍫", "🍓"];
+
+        cuerpo.innerHTML = productos.map(p => {
+          const charCode = p.nombre.charCodeAt(0) || 0;
+          const emoji = emojis[charCode % emojis.length];
+
+          return `
+            <div class="card">
+              <div class="card-img">${emoji}</div>
+              <div class="card-body">
+                <span class="card-category">${p.categoria || 'General'}</span>
+                <h3 class="card-title">${p.nombre}</h3>
+                <p class="card-desc">${p.descripcion || 'Delicioso helado artesanal.'}</p>
+                <div class="card-price">$${p.precio}</div>
+                <button class="btn btn-danger" style="display: none;" onclick="eliminar(${p.id})">Eliminar</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      } catch (error) {
+        document.getElementById("cuerpo").innerHTML = `<div class="empty-msg">Error de conexión con la nube ☁️</div>`;
+      }
     }
 
+    // Evento para crear un helado
     document.getElementById("form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      
       const nuevo = {
         nombre: document.getElementById("nombre").value,
+        descripcion: document.getElementById("descripcion").value || null,
         precio: parseFloat(document.getElementById("precio").value),
         stock: parseInt(document.getElementById("stock").value || 0),
-        categoria: document.getElementById("categoria").value || null,
+        categoria: document.getElementById("categoria").value,
       };
+
       await fetch(API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(nuevo),
       });
+      
       e.target.reset();
       cargar();
     });
 
+    // Evento para eliminar un helado
     async function eliminar(id) {
-      await fetch(API + id, { method: "DELETE" });
-      cargar();
+      if(confirm("¿Estás seguro de que quieres eliminar este helado del menú?")) {
+        await fetch(API + id, { method: "DELETE" });
+        cargar();
+      }
     }
 
+    // Función para el acceso del dueño
+    function accesoDueño() {
+      const password = prompt("Ingresa la contraseña de administrador:");
+      
+      if (password === "helados2026") {
+        document.getElementById("panel-admin").style.display = "block";
+        
+        const botonesEliminar = document.querySelectorAll('.btn-danger');
+        botonesEliminar.forEach(btn => btn.style.display = "inline-block");
+        
+        alert("¡Bienvenido, Dueño! 🧑‍🍳 Ahora puedes gestionar el menú.");
+      } else if (password !== null) {
+        alert("Contraseña incorrecta ❌");
+      }
+    }
+
+    // Iniciar
     cargar();
   </script>
 </body>

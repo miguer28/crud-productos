@@ -8,6 +8,7 @@ class ProductoBase(SQLModel):
     precio: float = Field(gt=0)                 # debe ser > 0
     stock: int = Field(default=0, ge=0)         # no negativo
     categoria: Optional[str] = Field(default=None, index=True)
+    imagen_url: Optional[str] = None            # <--- AGREGAR ESTA LÍNEA
 
 # Tabla real en la base de datos
 class Producto(ProductoBase, table=True):
